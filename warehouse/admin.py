@@ -1,5 +1,5 @@
 from django.contrib import admin
 
-from warehouse.models import Dimension
+from warehouse.models import DimensionModel
 
-admin.site.register(Dimension)
+admin.site.register(DimensionModel)

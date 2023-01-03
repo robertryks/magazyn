@@ -1,11 +1,11 @@
 from django import forms
 
-from warehouse.models import Dimension
+from warehouse.models import DimensionModel
 
 
 class DimensionForm(forms.ModelForm):
     class Meta:
-        model = Dimension
+        model = DimensionModel
         fields = ("size",)
         labels = {
             "size": "Średnica w mm"
