@@ -1,0 +1,14 @@
+{% extends '_base.html' %}
+
+{% block content %}
+    <div class="p-5 bg-light rounded-3 border">
+        <ul>
+            {% for dimension in dimension_list %}
+                <li>{{ dimension.size }} mm</li>
+            {% empty %}
+                <li>Brak średnic</li>
+            {% endfor %}
+
+        </ul>
+    </div>
+{% endblock %}

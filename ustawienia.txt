@@ -1,0 +1,14 @@
+DEBUG=on
+SECRET_KEY='django-insecure-nhh+xv*f3jl#^%@ludp^&#!=yi^6u)x+(x0zp$hi*!-&!c5-0u'
+
+_DATABASE_URL=psql://user:un-githubbedpassword@127.0.0.1:8458/database
+DATABASE_URL=sqlite:///db.sqlite3
+
+_CACHE_URL=memcache://127.0.0.1:11211,127.0.0.1:11212,127.0.0.1:11213
+_REDIS_URL=rediscache://127.0.0.1:6379/1?client_class=django_redis.client.DefaultClient&password=ungith
+
+EMAIL_HOST='localhost'
+EMAIL_PORT=2500
+EMAIL_USE_TLS=False
+EMAIL_HOST_USER='warehouse'
+EMAIL_HOST_PASSWORD=''
