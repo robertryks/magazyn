@@ -1,17 +1,14 @@
-{% extends '_base.html' %}
+{% for dimension in dimension_list %}
 
-{% block content %}
-    <div class="p-5 bg-dark rounded-3 border">
-        <ul>
-            {% for dimension in dimension_list %}
-                <li>{{ dimension.size }} mm</li>
-            {% empty %}
-                <li>Brak średnic</li>
-            {% endfor %}
+    <tr id="movie-{{ dimension.pk }}" class="movie-row">
+        <td>{{ dimension.size }}</td>
+        <td>
+            <button class="btn btn-primary btn-sm"
+                    hx-get="{% url 'dimension-edit' pk=dimension.pk %}"
+                    hx-target="#dialog">
+                Zmień
+            </button>
+        </td>
+    </tr>
 
-        </ul>
-        <hr>
-{#        <button hx-get="{% url 'dimension-create' %}" hx-target="#dialog">Dodaj średnicę</button>#}
-        <a href="{% url 'dimension-create' %}">Dodaj</a>
-    </div>
-{% endblock %}
+{% endfor %}

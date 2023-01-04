@@ -22,6 +22,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrap_modal_forms',
+    'widget_tweaks',
     'warehouse',
 ]
 
@@ -139,7 +141,7 @@ MESSAGE_TAGS = {
 }
 
 LOGIN_REDIRECT_URL = 'panel'
-LOGOUT_REDIRECT_URL = 'index'
+LOGOUT_REDIRECT_URL = '/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = env('EMAIL_HOST')

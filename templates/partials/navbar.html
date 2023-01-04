@@ -1,26 +1,22 @@
 <div class="container-fluid">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand ps-2" href="{% url 'index' %}">Skład konsygnacyjny</a>
 
         <div id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        {#                <a class="nav-link" href="{% url 'panel' %}">Panel</a>#}
-                        <a class="nav-link" href="#">Panel</a>
+                      <a class="nav-link" href="{% url 'panel' %}">Panel</a>
                     </li>
                     <li class="nav-item">
-                        {#                <a class="nav-link" href="{% url 'panel' %}">Panel</a>#}
-                        <a class="nav-link" href="{% url 'dimension-list' %}">Średnice</a>
+                      <a class="nav-link" href="{% url 'dimension-index' %}">Średnice</a>
                     </li>
                     <li class="nav-item">
-                        {#                <a class="nav-link" href="{% url 'logout' %}">Wyloguj ({{ request.user.username }})</a>#}
-                        <a class="nav-link" href="#">Wyloguj ({{ request.user.username }})</a>
+                      <a class="nav-link" href="{% url 'logout' %}">Wyloguj</a>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        {#                <a class="nav-link" href="{% url 'login' %}">Zaloguj</a>#}
-                        <a class="nav-link" href="#">Zaloguj</a>
+                      <a class="nav-link" href="{% url 'login' %}">Zaloguj</a>
                     </li>
                 {% endif %}
             </ul>
