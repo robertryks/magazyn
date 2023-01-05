@@ -14,11 +14,13 @@
     {% block content %}
     {% endblock %}
 </div>
+
 {% include "modals.html" %}
 {% include "toasts.html" %}
+
 <script src="{% static 'assets/js/bootstrap.js' %}"></script>
 <script src="{% static 'assets/js/jquery.js' %}"></script>
-<script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
+
 <script src="{% static 'js/htmx.min.js' %}"></script>
 <script src="{% static "js/dialog.js" %}"></script>
 <script src="{% static 'js/toast.js' %}"></script>

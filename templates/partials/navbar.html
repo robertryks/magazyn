@@ -9,14 +9,14 @@
                       <a class="nav-link" href="{% url 'panel' %}">Panel</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="{% url 'dimension-index' %}">Średnice</a>
+                      <a class="nav-link" href="{% url 'dimension-main' %}">Średnice</a>
                     </li>
                     <li class="nav-item">
                       <a class="nav-link" href="{% url 'logout' %}">Wyloguj</a>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                      <a class="nav-link" href="{% url 'login' %}">Zaloguj</a>
+                        <a class="nav-link" href="/" data-bs-toggle="modal" data-bs-target="#loginModal">Zaloguj</a>
                     </li>
                 {% endif %}
             </ul>

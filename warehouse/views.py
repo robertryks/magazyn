@@ -3,21 +3,28 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.http.response import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import cache_control
 from django.contrib.auth import authenticate, login, logout
-
 
 from warehouse.models import DimensionModel
 from warehouse.forms import DimensionForm, LoginForm
 
 
 def index(request):
-    return render(request, 'index.html')
+    return render(request, 'index.html', {'form': LoginForm()})
 
 
 # USER --------------------------------------------------------------------------------------------------------
 
+def login_check(request):
+    if request.user.is_authenticated:
+        return redirect('panel')
+    else:
+        messages.add_message(request, messages.ERROR, 'Strona wymaga zalogowania')
+        return redirect('index')
+
+
 def login_user(request):
-    form = LoginForm()
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -31,23 +38,30 @@ def login_user(request):
                 return redirect('panel')
             else:
                 messages.add_message(request, messages.ERROR, 'Błąd logowania!')
-    return render(request, 'authentication/login.html', context={'form': form})
+                return redirect('index')
+    else:
+        form = LoginForm()
+        return render(request, 'authentication/login.html', context={'form': form})
 
 
 def logout_user(request):
     logout(request)
+    request.user = None
     messages.add_message(request, messages.SUCCESS, 'Wylogowano!')
     return redirect('index')
 
 
+@login_required(login_url='/login')
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def panel(request):
     return render(request, 'panel.html')
 
 
 # DIMENSIONS ---------------------------------------------------------------------------------------------------
-
+@login_required(login_url='/login')
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def dimension_index(request):
-    return render(request, 'dimension/index.html')
+    return render(request, 'dimension/main.html')
 
 
 def dimension_list(request):

@@ -1,8 +1,34 @@
-{% extends '_base.html' %}
+{% load widget_tweaks %}
+
 {% block content %}
-    <form method="post">
-        {{ form.as_p }}
-        {% csrf_token %}
-        <button type="submit" >Submit</button>
-    </form>
+
+    <!-- Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Logowanie</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+        <form action="/login_user" method="post" autocomplete="off">
+           <div class="modal-body">
+                {% csrf_token %}
+                <div class="form-group">
+                    {% render_field form.username type="text" class="form-control" id="username" placeholder="Użytkownik" %}
+                </div>
+
+                <div class="form-group">
+                    {% render_field form.password type="password" class="form-control" id="password" placeholder="Hasło" %}
+                </div>
+
+                <div class="container d-grid gap-2 mt-4 mb-4">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                    <button type="submit" class="btn btn-primary">Zaloguj</button>
+                </div>
+           </div>
+        </form>
+    </div>
+  </div>
+</div>
+
 {% endblock content %}
