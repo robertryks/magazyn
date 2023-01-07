@@ -1,6 +1,6 @@
 from django import forms
 
-from warehouse.models import DimensionModel
+from warehouse.models import DimensionModel, GradeModel
 
 
 class LoginForm(forms.Form):
@@ -18,5 +18,19 @@ class DimensionForm(forms.ModelForm):
         widgets = {
             "size": forms.TextInput(
                 attrs={"placeholder": "0.00"}
+            )
+        }
+
+
+class GradeForm(forms.ModelForm):
+    class Meta:
+        model = GradeModel
+        fields = ("name",)
+        labels = {
+            "name": "Gatunek"
+        }
+        widgets = {
+            "name": forms.TextInput(
+                attrs={"placeholder": "oznaczenie"}
             )
         }

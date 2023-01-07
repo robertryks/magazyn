@@ -1,0 +1,14 @@
+{% for grade in grade_list %}
+
+    <tr id="movie-{{ grade.pk }}" class="movie-row">
+        <td>{{ grade.name }}</td>
+        <td>
+            <button class="btn btn-primary btn-sm"
+                    hx-get="{% url 'grade-edit' pk=grade.pk %}"
+                    hx-target="#dialog">
+                Zmień
+            </button>
+        </td>
+    </tr>
+
+{% endfor %}

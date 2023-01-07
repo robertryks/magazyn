@@ -6,8 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
 from django.contrib.auth import authenticate, login, logout
 
-from warehouse.models import DimensionModel
-from warehouse.forms import DimensionForm, LoginForm
+from warehouse.models import DimensionModel, GradeModel
+from warehouse.forms import DimensionForm, LoginForm, GradeForm
 
 
 def index(request):
@@ -58,6 +58,7 @@ def panel(request):
 
 
 # DIMENSIONS ---------------------------------------------------------------------------------------------------
+
 @login_required(login_url='/login')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def dimension_index(request):
@@ -133,3 +134,85 @@ def dimension_remove(request, pk):
             })
         }
     )
+
+
+# GRADES ---------------------------------------------------------------------------------------------------
+
+@login_required(login_url='/login')
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def grade_index(request):
+    return render(request, 'grade/main.html')
+
+
+def grade_list(request):
+    return render(request, 'grade/list.html', {'grade_list': GradeModel.objects.all()})
+
+
+def grade_add(request):
+    if request.method == 'POST':
+        form = GradeForm(request.POST)
+        if form.is_valid():
+            grade = form.save()
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 f"Dodano gatunek: {grade.name}"
+                                 )
+            return HttpResponse(
+                status=204,
+                headers={
+                    'HX-Trigger': json.dumps({
+                        "gradeListChanged": None
+                    })
+
+                })
+    else:
+        form = GradeForm()
+    return render(request, 'grade/form.html', {
+        'form': form,
+    })
+
+
+def grade_edit(request, pk):
+    grade = get_object_or_404(GradeModel, pk=pk)
+    if request.method == "POST":
+        form = GradeForm(request.POST, instance=grade)
+        if form.is_valid():
+            form.save()
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 f"Zmieniono gatunek na {grade.name}"
+                                 )
+            return HttpResponse(
+                status=204,
+                headers={
+                    'HX-Trigger': json.dumps({
+                        "gradeListChanged": None
+                    })
+                }
+            )
+    else:
+        form = GradeForm(instance=grade)
+    return render(request, 'grade/form.html', {
+        'form': form,
+        'grade': grade,
+    })
+
+
+def grade_remove(request, pk):
+    grade = get_object_or_404(GradeModel, pk=pk)
+    grade.delete()
+    messages.add_message(request,
+                         messages.SUCCESS,
+                         f"Usunięto gatunek {grade.name}"
+                         )
+    return HttpResponse(
+        status=204,
+        headers={
+            'HX-Trigger': json.dumps({
+                "gradeListChanged": None
+            })
+        }
+    )
+
+
+# HEATS -----------------------------------------------------------------------------------------------------------

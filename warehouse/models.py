@@ -40,29 +40,29 @@ class DimensionModel(BaseModel):
                                    violation_error_message="Średnica musi być większa od zera."),
         ]
 
-#
-# class Grade(BaseModel):
-#     name = models.CharField(max_length=25,
-#                             verbose_name='Oznaczenie',
-#                             unique=True,
-#                             error_messages={
-#                                 "required": "Wartość w polu gatunku jest wymagana.",
-#                                 "unique": "Taki gatunek już istnieje w bazie danych."
-#                             })
-#
-#     def __str__(self):
-#         return self.name
-#
-#     class Meta:
-#         verbose_name = 'Gatunek'
-#         verbose_name_plural = 'Gatunki'
-#         ordering = ['name']
-#         indexes = [
-#             models.Index(fields=['name'], name='grade_name_idx')
-#         ]
-#
-#
-# class Heat(BaseModel):
+
+class GradeModel(BaseModel):
+    name = models.CharField(max_length=25,
+                            verbose_name='Oznaczenie',
+                            unique=True,
+                            error_messages={
+                                "unique": "Taki gatunek już istnieje w bazie danych."
+                            })
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'grade'
+        verbose_name = 'Gatunek'
+        verbose_name_plural = 'Gatunki'
+        ordering = ['name']
+        indexes = [
+            models.Index(fields=['name'], name='grade_name_idx')
+        ]
+
+
+# class HeatModel(BaseModel):
 #     name = models.CharField(max_length=25,
 #                             verbose_name='Oznaczenie',
 #                             unique=True)
@@ -71,6 +71,7 @@ class DimensionModel(BaseModel):
 #         return self.name
 #
 #     class Meta:
+#         db_table = 'heat'
 #         verbose_name = 'Wytop'
 #         verbose_name_plural = 'Wytopy'
 #         ordering = ['name']
