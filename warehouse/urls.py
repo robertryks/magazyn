@@ -33,4 +33,11 @@ urlpatterns = [
     path('heat/<int:pk>/edit', views.heat_edit, name='heat-edit'),
     path('heat/<int:pk>/remove', views.heat_remove, name='heat-remove'),
 
+    # CERTIFICATE
+    path('certificate/all', views.certificate_index, name='certificate-main'),
+    path('certificate/list', views.certificate_list, name='certificate-list'),
+    path('certificate/add', views.certificate_add, name='certificate-add'),
+    path('certificate/<int:pk>/edit', views.certificate_edit, name='certificate-edit'),
+    path('certificate/<int:pk>/remove', views.certificate_remove, name='certificate-remove'),
+
 ]

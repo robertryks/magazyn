@@ -6,12 +6,13 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
 from django.contrib.auth import authenticate, login, logout
 
-from warehouse.models import DimensionModel, GradeModel, HeatModel
-from warehouse.forms import DimensionForm, LoginForm, GradeForm, HeatForm
+from warehouse.models import DimensionModel, GradeModel, HeatModel, CertificateModel
+from warehouse.forms import DimensionForm, LoginForm, GradeForm, HeatForm, CertificateForm
 
 
 def index(request):
     return render(request, 'index.html', {'form': LoginForm()})
+
 
 # region USER
 
@@ -57,6 +58,8 @@ def logout_user(request):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def panel(request):
     return render(request, 'panel.html')
+
+
 # endregion
 
 # region DIMENSION
@@ -138,6 +141,8 @@ def dimension_remove(request, pk):
             })
         }
     )
+
+
 # endregion
 
 # region GRADE
@@ -219,6 +224,8 @@ def grade_remove(request, pk):
             })
         }
     )
+
+
 # endregion
 
 # region HEAT
@@ -299,5 +306,85 @@ def heat_remove(request, pk):
             })
         }
     )
+
+
 # endregion
 
+# region CERTIFICATE
+
+@login_required(login_url='/login')
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def certificate_index(request):
+    return render(request, 'certificate/main.html')
+
+
+def certificate_list(request):
+    return render(request, 'certificate/list.html', {'certificate_list': CertificateModel.objects.all()})
+
+
+def certificate_add(request):
+    if request.method == 'POST':
+        form = CertificateForm(request.POST)
+        if form.is_valid():
+            certificate = form.save()
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 f"Dodano certyfikat: {certificate.name}"
+                                 )
+            return HttpResponse(
+                status=204,
+                headers={
+                    'HX-Trigger': json.dumps({
+                        "certificateListChanged": None
+                    })
+
+                })
+    else:
+        form = HeatForm()
+    return render(request, 'certificate/form.html', {
+        'form': form,
+    })
+
+
+def certificate_edit(request, pk):
+    certificate = get_object_or_404(CertificateModel, pk=pk)
+    if request.method == "POST":
+        form = CertificateForm(request.POST, instance=certificate)
+        if form.is_valid():
+            form.save()
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 f"Zmieniono certyfikat na {certificate.name}"
+                                 )
+            return HttpResponse(
+                status=204,
+                headers={
+                    'HX-Trigger': json.dumps({
+                        "certificateListChanged": None
+                    })
+                }
+            )
+    else:
+        form = CertificateForm(instance=certificate)
+    return render(request, 'certificate/form.html', {
+        'form': form,
+        'certificate': certificate,
+    })
+
+
+def certificate_remove(request, pk):
+    certificate = get_object_or_404(CertificateModel, pk=pk)
+    certificate.delete()
+    messages.add_message(request,
+                         messages.SUCCESS,
+                         f"Usunięto certyfikat {certificate.name}"
+                         )
+    return HttpResponse(
+        status=204,
+        headers={
+            'HX-Trigger': json.dumps({
+                "certificateListChanged": None
+            })
+        }
+    )
+# endregion

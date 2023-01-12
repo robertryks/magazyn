@@ -80,23 +80,23 @@ class HeatModel(BaseModel):
         ]
 
 
-# class Certificate(BaseModel):
-#     number = models.CharField(max_length=25,
-#                               verbose_name='Numer',
-#                               unique=True)
-#
-#     def __str__(self):
-#         return self.number
-#
-#     class Meta:
-#         verbose_name = 'Certyfikat'
-#         verbose_name_plural = 'Certyfikaty'
-#         ordering = ['number']
-#         indexes = [
-#             models.Index(fields=['number'], name='certificate_number_idx')
-#         ]
-#
-#
+class CertificateModel(BaseModel):
+    name = models.CharField(max_length=25,
+                            verbose_name='Identyfikator',
+                            unique=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'certificate'
+        verbose_name = 'Certyfikat'
+        verbose_name_plural = 'Certyfikaty'
+        ordering = ['name']
+        indexes = [
+            models.Index(fields=['name'], name='certificate_name_idx')
+        ]
+
 # # Przyjęcie towaru na skład
 # class Supply(BaseModel):
 #     number = models.CharField(max_length=25,

@@ -1,10 +1,10 @@
-{% for grade in grade_list %}
+{% for certificate in certificate_list %}
 
-    <tr id="movie-{{ grade.pk }}" class="movie-row">
-        <td>{{ grade.name }}</td>
+    <tr id="movie-{{ certificate.pk }}" class="movie-row">
+        <td>{{ certificate.name }}</td>
         <td>
             <button class="btn btn-primary btn-sm"
-                    hx-get="{% url 'grade-edit' pk=grade.pk %}"
+                    hx-get="{% url 'certificate-edit' pk=certificate.pk %}"
                     hx-target="#dialog">
                 <i class="fa-solid fa-pen-to-square"></i>
             </button>
