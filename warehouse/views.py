@@ -6,8 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
 from django.contrib.auth import authenticate, login, logout
 
-from warehouse.models import DimensionModel, GradeModel, HeatModel, CertificateModel, SupplyModel
-from warehouse.forms import DimensionForm, LoginForm, GradeForm, HeatForm, CertificateForm, SupplyForm
+from warehouse.models import DimensionModel, GradeModel, HeatModel, CertificateModel, SupplyModel, SupplyItemModel
+from warehouse.forms import DimensionForm, LoginForm, GradeForm, HeatForm, CertificateForm, SupplyForm, SupplyItemForm
 
 
 def index(request):
@@ -495,6 +495,102 @@ def supply_remove(request, pk):
             headers={
                 'HX-Trigger': json.dumps({
                     "supplyListChanged": None
+                })
+            }
+        )
+
+
+# endregion
+
+# region SUPPLY
+
+@login_required(login_url='/login')
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def supply_item_index(request):
+    return render(request, 'supply_item/main.html')
+
+
+def supply_item_list(request):
+    return render(request, 'supply_item/list.html', {'supply_item_list': SupplyItemModel.objects.all()})
+
+
+def supply_item_add(request):
+    if request.method == 'POST':
+        form = SupplyItemForm(request.POST)
+        if form.is_valid():
+            supply_item = form.save()
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 f"Dodano dostawę o numerze: {supply_item.number}"
+                                 )
+            return HttpResponse(
+                status=204,
+                headers={
+                    'HX-Trigger': json.dumps({
+                        "supply_itemListChanged": None
+                    })
+
+                })
+    else:
+        form = SupplyItemForm()
+    return render(request, 'supply_item/form.html', {
+        'form': form,
+    })
+
+
+def supply_item_edit(request, pk):
+    supply_item = get_object_or_404(SupplyModel, pk=pk)
+    if request.method == "POST":
+        form = SupplyItemForm(request.POST, instance=supply_item)
+        if form.is_valid():
+            form.save()
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 f"Zmieniono numer dostawy na {supply_item.number}"
+                                 )
+            return HttpResponse(
+                status=204,
+                headers={
+                    'HX-Trigger': json.dumps({
+                        "supply_itemListChanged": None
+                    })
+                }
+            )
+    else:
+        form = SupplyItemForm(instance=supply_item)
+    return render(request, 'supply_item/form.html', {
+        'form': form,
+        'supply_item': supply_item,
+    })
+
+
+def supply_item_remove(request, pk):
+    supply_item = get_object_or_404(SupplyItemModel, pk=pk)
+    related_list = supply_item.is_deletable()
+    if related_list:
+        messages.add_message(request,
+                             messages.ERROR,
+                             f"Dostawa o numerze {supply_item.number} jest w użyciu."
+                             )
+        return HttpResponse(
+            status=204,
+            headers={
+                'HX-Trigger': json.dumps({
+                    "supply_itemListChanged": None
+                })
+            }
+        )
+    else:
+        supply_item.delete()
+        messages.add_message(request,
+                             messages.SUCCESS,
+                             f"Usunięto dostawę o numerze {supply_item.number}"
+                             )
+        return HttpResponse(
+            status=204,
+            headers={
+                'HX-Trigger': json.dumps({
+                    "supply_itemListChanged": None
                 })
             }
         )

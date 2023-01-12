@@ -137,57 +137,59 @@ class SupplyModel(BaseModel):
             models.Index(fields=['date'], name='supply_date_idx')
         ]
 
-# # Pozycja na dostawie towaru
-# class SupplyItem(BaseModel):
-#     supply = models.ForeignKey(Supply,
-#                                on_delete=models.CASCADE,
-#                                verbose_name='Przychód',
-#                                related_name='supplyitem')
-#
-#     dimension = models.ForeignKey(DimensionModel,
-#                                   on_delete=models.CASCADE,
-#                                   verbose_name='Średnica',
-#                                   related_name='supplyitem')
-#
-#     grade = models.ForeignKey(Grade,
-#                               on_delete=models.CASCADE,
-#                               verbose_name='Gatunek',
-#                               related_name='supplyitem')
-#
-#     heat = models.ForeignKey(Heat,
-#                              on_delete=models.CASCADE,
-#                              verbose_name='Wytop',
-#                              related_name='supplyitem')
-#
-#     certificate = models.ForeignKey(Certificate,
-#                                     on_delete=models.CASCADE,
-#                                     verbose_name='Certyfikat',
-#                                     related_name='supplyitem')
-#
-#     quantity = models.DecimalField(decimal_places=2,
-#                                    max_digits=6,
-#                                    verbose_name='Ilość',
-#                                    default=0)
-#
-#     actual = models.DecimalField(decimal_places=2,
-#                                  max_digits=6,
-#                                  verbose_name='Stan',
-#                                  default=0)
-#
-#     can_modify = models.BooleanField(verbose_name='Modyfikacja',
-#                                      default=True)
-#
-#     def __str__(self):
-#         return f'{self.dimension} mm ({self.grade}) - {self.actual} / {self.quantity} kg'
-#
-#     class Meta:
-#         verbose_name = 'Pozycja przychodu'
-#         verbose_name_plural = 'Pozycje przychodu'
-#         indexes = [
-#             models.Index(fields=['dimension', 'grade'], name='supplyitem_dimension_grade_idx')
-#         ]
-#
-#
+
+# Pozycja na dostawie towaru
+class SupplyItemModel(BaseModel):
+    supply = models.ForeignKey(SupplyModel,
+                               on_delete=models.CASCADE,
+                               verbose_name='Przychód',
+                               related_name='supplyitem')
+
+    dimension = models.ForeignKey(DimensionModel,
+                                  on_delete=models.CASCADE,
+                                  verbose_name='Średnica',
+                                  related_name='supplyitem')
+
+    grade = models.ForeignKey(GradeModel,
+                              on_delete=models.CASCADE,
+                              verbose_name='Gatunek',
+                              related_name='supplyitem')
+
+    heat = models.ForeignKey(HeatModel,
+                             on_delete=models.CASCADE,
+                             verbose_name='Wytop',
+                             related_name='supplyitem')
+
+    certificate = models.ForeignKey(CertificateModel,
+                                    on_delete=models.CASCADE,
+                                    verbose_name='Certyfikat',
+                                    related_name='supplyitem')
+
+    quantity = models.DecimalField(decimal_places=2,
+                                   max_digits=6,
+                                   verbose_name='Ilość',
+                                   default=0)
+
+    actual = models.DecimalField(decimal_places=2,
+                                 max_digits=6,
+                                 verbose_name='Stan',
+                                 default=0)
+
+    can_modify = models.BooleanField(verbose_name='Modyfikacja',
+                                     default=True)
+
+    def __str__(self):
+        return f'{self.dimension} mm ({self.grade}) - {self.actual} / {self.quantity} kg'
+
+    class Meta:
+        db_table = 'supply_item'
+        verbose_name = 'Pozycja przychodu'
+        verbose_name_plural = 'Pozycje przychodu'
+        indexes = [
+            models.Index(fields=['dimension', 'grade'], name='supplyitem_dimension_grade_idx')
+        ]
+
+
 # # Wydanie towaru na skład
 # class Issue(BaseModel):
 #     number = models.CharField(max_length=25,

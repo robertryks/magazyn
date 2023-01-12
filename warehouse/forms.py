@@ -1,6 +1,6 @@
 from django import forms
 
-from warehouse.models import DimensionModel, GradeModel, HeatModel, CertificateModel, SupplyModel
+from warehouse.models import DimensionModel, GradeModel, HeatModel, CertificateModel, SupplyModel, SupplyItemModel
 
 
 class LoginForm(forms.Form):
@@ -77,4 +77,24 @@ class SupplyForm(forms.ModelForm):
                 attrs={"placeholder": "numer"}
             ),
             "date": forms.DateInput
+        }
+
+
+class SupplyItemForm(forms.ModelForm):
+    class Meta:
+        model = SupplyItemModel
+        exclude = ("can_modify", "actual")
+        labels = {
+            "dimension": "Średnica",
+            "grade": "Gatunek",
+            "heat": "Wytop",
+            "certificate": "Certyfikat",
+            "quantity": "Ilość",
+        }
+        widgets = {
+            "dimension": forms.DecimalField,
+            "grade": forms.TextInput,
+            "heat": forms.TextInput,
+            "certificate": forms.TextInput,
+            "quantity": forms.DecimalField
         }

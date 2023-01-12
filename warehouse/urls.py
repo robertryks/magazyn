@@ -47,4 +47,11 @@ urlpatterns = [
     path('supply/<int:pk>/edit', views.supply_edit, name='supply-edit'),
     path('supply/<int:pk>/remove', views.supply_remove, name='supply-remove'),
 
+    # SUPPLY_ITEM
+    path('supply_item/all', views.supply_item_index, name='supply_item-main'),
+    path('supply_item/list', views.supply_item_list, name='supply_item-list'),
+    path('supply_item/add', views.supply_item_add, name='supply_item-add'),
+    path('supply_item/<int:pk>/edit', views.supply_item_edit, name='supply_item-edit'),
+    path('supply_item/<int:pk>/remove', views.supply_item_remove, name='supply_item-remove'),
+
 ]
