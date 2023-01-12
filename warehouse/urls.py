@@ -40,4 +40,11 @@ urlpatterns = [
     path('certificate/<int:pk>/edit', views.certificate_edit, name='certificate-edit'),
     path('certificate/<int:pk>/remove', views.certificate_remove, name='certificate-remove'),
 
+    # SUPPLY
+    path('supply/all', views.supply_index, name='supply-main'),
+    path('supply/list', views.supply_list, name='supply-list'),
+    path('supply/add', views.supply_add, name='supply-add'),
+    path('supply/<int:pk>/edit', views.supply_edit, name='supply-edit'),
+    path('supply/<int:pk>/remove', views.supply_remove, name='supply-remove'),
+
 ]

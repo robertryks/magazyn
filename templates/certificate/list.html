@@ -3,10 +3,10 @@
     <tr id="movie-{{ certificate.pk }}" class="movie-row">
         <td>{{ certificate.name }}</td>
         <td>
-            <button class="btn btn-primary btn-sm"
+            <button class="btn btn-outline-primary btn-sm"
                     hx-get="{% url 'certificate-edit' pk=certificate.pk %}"
                     hx-target="#dialog">
-                <i class="fa-solid fa-pen-to-square"></i>
+                <i class="fa-solid fa-pen"></i>
             </button>
         </td>
     </tr>

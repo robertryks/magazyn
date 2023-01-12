@@ -1,0 +1,15 @@
+{% for supply in supply_list %}
+
+    <tr id="movie-{{ supply.pk }}" class="movie-row">
+        <td>{{ supply.number }}</td>
+        <td>{{ supply.date }}</td>
+        <td>
+            <button class="btn btn-outline-primary btn-sm"
+                    hx-get="{% url 'supply-edit' pk=supply.pk %}"
+                    hx-target="#dialog">
+                <i class="fa-solid fa-pen"></i>
+            </button>
+        </td>
+    </tr>
+
+{% endfor %}

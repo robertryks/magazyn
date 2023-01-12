@@ -3,10 +3,10 @@
     <tr id="movie-{{ grade.pk }}" class="movie-row">
         <td>{{ grade.name }}</td>
         <td>
-            <button class="btn btn-primary btn-sm"
+            <button class="btn btn-outline-primary btn-sm"
                     hx-get="{% url 'grade-edit' pk=grade.pk %}"
                     hx-target="#dialog">
-                <i class="fa-solid fa-pen-to-square"></i>
+                <i class="fa-solid fa-pen"></i>
             </button>
         </td>
     </tr>

@@ -10,6 +10,20 @@ class BaseModel(models.Model):
     created = models.DateTimeField(auto_now_add=True,
                                    verbose_name='Data utworzenia')
 
+    def is_deletable(self):
+        related_list = []
+        # get all the related object
+        for rel in self._meta.get_fields():
+            try:
+                # check if there is a relationship with at least one related object
+                related = rel.related_model.objects.filter(**{rel.field.name: self})
+                if related.exists():
+                    related_list.append(related)
+                    # if there is return a Tuple of flag = False the related_model object
+            except AttributeError:  # an attribute error for field occurs when checking for AutoField
+                pass  # just pass as we dont need to check for AutoField
+        return related_list
+
     class Meta:
         abstract = True
 
@@ -97,31 +111,32 @@ class CertificateModel(BaseModel):
             models.Index(fields=['name'], name='certificate_name_idx')
         ]
 
-# # Przyjęcie towaru na skład
-# class Supply(BaseModel):
-#     number = models.CharField(max_length=25,
-#                               verbose_name='Dokument',
-#                               unique=True)
-#
-#     date = models.DateField(verbose_name='Data')
-#
-#     can_modify = models.BooleanField(verbose_name='Modyfikacja',
-#                                      default=True)
-#
-#     def __str__(self):
-#         return self.number
-#
-#     class Meta:
-#         verbose_name = 'Przychód'
-#         verbose_name_plural = 'Przychody'
-#         ordering = ['number']
-#         get_latest_by = 'date'
-#         indexes = [
-#             models.Index(fields=['number'], name='supply_number_idx'),
-#             models.Index(fields=['date'], name='supply_date_idx')
-#         ]
-#
-#
+
+# Przyjęcie towaru na skład
+class SupplyModel(BaseModel):
+    number = models.CharField(max_length=25,
+                              verbose_name='Dokument',
+                              unique=True)
+
+    date = models.DateField(verbose_name='Data')
+
+    can_modify = models.BooleanField(verbose_name='Modyfikacja',
+                                     default=True)
+
+    def __str__(self):
+        return self.number
+
+    class Meta:
+        db_table = 'supply'
+        verbose_name = 'Przychód'
+        verbose_name_plural = 'Przychody'
+        ordering = ['number']
+        get_latest_by = 'date'
+        indexes = [
+            models.Index(fields=['number'], name='supply_number_idx'),
+            models.Index(fields=['date'], name='supply_date_idx')
+        ]
+
 # # Pozycja na dostawie towaru
 # class SupplyItem(BaseModel):
 #     supply = models.ForeignKey(Supply,

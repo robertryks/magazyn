@@ -3,10 +3,10 @@
     <tr id="movie-{{ heat.pk }}" class="movie-row">
         <td>{{ heat.name }}</td>
         <td>
-            <button class="btn btn-primary btn-sm"
+            <button class="btn btn-outline-primary btn-sm"
                     hx-get="{% url 'heat-edit' pk=heat.pk %}"
                     hx-target="#dialog">
-                <i class="fa-solid fa-pen-to-square"></i>
+                <i class="fa-solid fa-pen"></i>
             </button>
         </td>
     </tr>

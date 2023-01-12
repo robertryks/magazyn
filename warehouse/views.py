@@ -6,8 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
 from django.contrib.auth import authenticate, login, logout
 
-from warehouse.models import DimensionModel, GradeModel, HeatModel, CertificateModel
-from warehouse.forms import DimensionForm, LoginForm, GradeForm, HeatForm, CertificateForm
+from warehouse.models import DimensionModel, GradeModel, HeatModel, CertificateModel, SupplyModel
+from warehouse.forms import DimensionForm, LoginForm, GradeForm, HeatForm, CertificateForm, SupplyForm
 
 
 def index(request):
@@ -374,17 +374,128 @@ def certificate_edit(request, pk):
 
 def certificate_remove(request, pk):
     certificate = get_object_or_404(CertificateModel, pk=pk)
-    certificate.delete()
-    messages.add_message(request,
-                         messages.SUCCESS,
-                         f"Usunięto certyfikat {certificate.name}"
-                         )
-    return HttpResponse(
-        status=204,
-        headers={
-            'HX-Trigger': json.dumps({
-                "certificateListChanged": None
-            })
-        }
-    )
+    related_list = certificate.is_deletable()
+    if related_list:
+        messages.add_message(request,
+                             messages.ERROR,
+                             f"Certyfikat {certificate.name} jest w użyciu."
+                             )
+        return HttpResponse(
+            status=204,
+            headers={
+                'HX-Trigger': json.dumps({
+                    "certificateListChanged": None
+                })
+            }
+        )
+    else:
+        certificate.delete()
+        messages.add_message(request,
+                             messages.SUCCESS,
+                             f"Usunięto certyfikat {certificate.name}"
+                             )
+        return HttpResponse(
+            status=204,
+            headers={
+                'HX-Trigger': json.dumps({
+                    "certificateListChanged": None
+                })
+            }
+        )
+
+
+# endregion
+
+# region SUPPLY
+
+@login_required(login_url='/login')
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def supply_index(request):
+    return render(request, 'supply/main.html')
+
+
+def supply_list(request):
+    return render(request, 'supply/list.html', {'supply_list': SupplyModel.objects.all()})
+
+
+def supply_add(request):
+    if request.method == 'POST':
+        form = SupplyForm(request.POST)
+        if form.is_valid():
+            supply = form.save()
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 f"Dodano dostawę o numerze: {supply.number}"
+                                 )
+            return HttpResponse(
+                status=204,
+                headers={
+                    'HX-Trigger': json.dumps({
+                        "supplyListChanged": None
+                    })
+
+                })
+    else:
+        form = SupplyForm()
+    return render(request, 'supply/form.html', {
+        'form': form,
+    })
+
+
+def supply_edit(request, pk):
+    supply = get_object_or_404(SupplyModel, pk=pk)
+    if request.method == "POST":
+        form = SupplyForm(request.POST, instance=supply)
+        if form.is_valid():
+            form.save()
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 f"Zmieniono numer dostawy na {supply.number}"
+                                 )
+            return HttpResponse(
+                status=204,
+                headers={
+                    'HX-Trigger': json.dumps({
+                        "supplyListChanged": None
+                    })
+                }
+            )
+    else:
+        form = SupplyForm(instance=supply)
+    return render(request, 'supply/form.html', {
+        'form': form,
+        'supply': supply,
+    })
+
+
+def supply_remove(request, pk):
+    supply = get_object_or_404(SupplyModel, pk=pk)
+    related_list = supply.is_deletable()
+    if related_list:
+        messages.add_message(request,
+                             messages.ERROR,
+                             f"Dostawa o numerze {supply.number} jest w użyciu."
+                             )
+        return HttpResponse(
+            status=204,
+            headers={
+                'HX-Trigger': json.dumps({
+                    "supplyListChanged": None
+                })
+            }
+        )
+    else:
+        supply.delete()
+        messages.add_message(request,
+                             messages.SUCCESS,
+                             f"Usunięto dostawę o numerze {supply.number}"
+                             )
+        return HttpResponse(
+            status=204,
+            headers={
+                'HX-Trigger': json.dumps({
+                    "supplyListChanged": None
+                })
+            }
+        )
 # endregion
