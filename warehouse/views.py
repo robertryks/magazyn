@@ -6,15 +6,17 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
 from django.contrib.auth import authenticate, login, logout
 
-from warehouse.models import DimensionModel, GradeModel
-from warehouse.forms import DimensionForm, LoginForm, GradeForm
+from warehouse.models import DimensionModel, GradeModel, HeatModel
+from warehouse.forms import DimensionForm, LoginForm, GradeForm, HeatForm
 
 
 def index(request):
     return render(request, 'index.html', {'form': LoginForm()})
 
+# region USER
 
 # USER --------------------------------------------------------------------------------------------------------
+
 
 def login_check(request):
     if request.user.is_authenticated:
@@ -55,7 +57,9 @@ def logout_user(request):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def panel(request):
     return render(request, 'panel.html')
+# endregion
 
+# region DIMENSION
 
 # DIMENSIONS ---------------------------------------------------------------------------------------------------
 
@@ -134,7 +138,9 @@ def dimension_remove(request, pk):
             })
         }
     )
+# endregion
 
+# region GRADE
 
 # GRADES ---------------------------------------------------------------------------------------------------
 
@@ -213,6 +219,85 @@ def grade_remove(request, pk):
             })
         }
     )
+# endregion
+
+# region HEAT
 
 
-# HEATS -----------------------------------------------------------------------------------------------------------
+@login_required(login_url='/login')
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def heat_index(request):
+    return render(request, 'heat/main.html')
+
+
+def heat_list(request):
+    return render(request, 'heat/list.html', {'heat_list': HeatModel.objects.all()})
+
+
+def heat_add(request):
+    if request.method == 'POST':
+        form = HeatForm(request.POST)
+        if form.is_valid():
+            heat = form.save()
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 f"Dodano gatunek: {heat.name}"
+                                 )
+            return HttpResponse(
+                status=204,
+                headers={
+                    'HX-Trigger': json.dumps({
+                        "heatListChanged": None
+                    })
+
+                })
+    else:
+        form = HeatForm()
+    return render(request, 'heat/form.html', {
+        'form': form,
+    })
+
+
+def heat_edit(request, pk):
+    heat = get_object_or_404(HeatModel, pk=pk)
+    if request.method == "POST":
+        form = HeatForm(request.POST, instance=heat)
+        if form.is_valid():
+            form.save()
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 f"Zmieniono wytop na {heat.name}"
+                                 )
+            return HttpResponse(
+                status=204,
+                headers={
+                    'HX-Trigger': json.dumps({
+                        "heatListChanged": None
+                    })
+                }
+            )
+    else:
+        form = HeatForm(instance=heat)
+    return render(request, 'heat/form.html', {
+        'form': form,
+        'heat': heat,
+    })
+
+
+def heat_remove(request, pk):
+    heat = get_object_or_404(HeatModel, pk=pk)
+    heat.delete()
+    messages.add_message(request,
+                         messages.SUCCESS,
+                         f"Usunięto wytop {heat.name}"
+                         )
+    return HttpResponse(
+        status=204,
+        headers={
+            'HX-Trigger': json.dumps({
+                "heatListChanged": None
+            })
+        }
+    )
+# endregion
+

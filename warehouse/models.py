@@ -62,24 +62,24 @@ class GradeModel(BaseModel):
         ]
 
 
-# class HeatModel(BaseModel):
-#     name = models.CharField(max_length=25,
-#                             verbose_name='Oznaczenie',
-#                             unique=True)
-#
-#     def __str__(self):
-#         return self.name
-#
-#     class Meta:
-#         db_table = 'heat'
-#         verbose_name = 'Wytop'
-#         verbose_name_plural = 'Wytopy'
-#         ordering = ['name']
-#         indexes = [
-#             models.Index(fields=['name'], name='heat_name_idx')
-#         ]
-#
-#
+class HeatModel(BaseModel):
+    name = models.CharField(max_length=25,
+                            verbose_name='Oznaczenie',
+                            unique=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'heat'
+        verbose_name = 'Wytop'
+        verbose_name_plural = 'Wytopy'
+        ordering = ['name']
+        indexes = [
+            models.Index(fields=['name'], name='heat_name_idx')
+        ]
+
+
 # class Certificate(BaseModel):
 #     number = models.CharField(max_length=25,
 #                               verbose_name='Numer',

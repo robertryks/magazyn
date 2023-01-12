@@ -26,4 +26,11 @@ urlpatterns = [
     path('grade/<int:pk>/edit', views.grade_edit, name='grade-edit'),
     path('grade/<int:pk>/remove', views.grade_remove, name='grade-remove'),
 
+    # HEAT
+    path('heat/all', views.heat_index, name='heat-main'),
+    path('heat/list', views.heat_list, name='heat-list'),
+    path('heat/add', views.heat_add, name='heat-add'),
+    path('heat/<int:pk>/edit', views.heat_edit, name='heat-edit'),
+    path('heat/<int:pk>/remove', views.heat_remove, name='heat-remove'),
+
 ]

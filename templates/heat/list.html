@@ -1,0 +1,14 @@
+{% for heat in heat_list %}
+
+    <tr id="movie-{{ heat.pk }}" class="movie-row">
+        <td>{{ heat.name }}</td>
+        <td>
+            <button class="btn btn-primary btn-sm"
+                    hx-get="{% url 'heat-edit' pk=heat.pk %}"
+                    hx-target="#dialog">
+                Zmień
+            </button>
+        </td>
+    </tr>
+
+{% endfor %}
