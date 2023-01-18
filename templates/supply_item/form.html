@@ -1,0 +1,47 @@
+{% load widget_tweaks %}
+
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+    <form hx-post="{{ request.path }}" hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}' class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Edycja pozycji dostawy</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+        </div>
+        <div class="modal-body">
+            <div class="mb-3">
+                <label for="{{ form.dimension.id_for_label }}" class="form-label">{{ form.dimension.label }}</label>
+                {% render_field form.dimension class="form-control" %}
+                <div class="invalid-feedback">{{ form.dimension.errors|first }}</div>
+            </div>
+            <div class="mb-1">
+                <label for="{{ form.grade.id_for_label }}" class="form-label">{{ form.grade.label }}</label>
+                {% render_field form.grade type="date" class="form-control" %}
+                <div class="invalid-feedback">{{ form.grade.errors|first }}</div>
+            </div>
+            <div class="mb-1">
+                <label for="{{ form.heat.id_for_label }}" class="form-label">{{ form.heat.label }}</label>
+                {% render_field form.heat type="date" class="form-control" %}
+                <div class="invalid-feedback">{{ form.heat.errors|first }}</div>
+            </div>
+            <div class="mb-1">
+                <label for="{{ form.certificate.id_for_label }}" class="form-label">{{ form.certificate.label }}</label>
+                {% render_field form.certificate type="date" class="form-control" %}
+                <div class="invalid-feedback">{{ form.certificate.errors|first }}</div>
+            </div>
+            <div class="mb-1">
+                <label for="{{ form.quantity.id_for_label }}" class="form-label">{{ form.quantity.label }}</label>
+                {% render_field form.quantity class="form-control" %}
+                <div class="invalid-feedback">{{ form.quantity.errors|first }}</div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            {% if supply_item %}
+                <button type="button" class="btn btn-danger" hx-post="{% url 'supply_item-remove' pk=supply_item.pk %}">
+                    Usuń
+                </button>
+                <span class="flex-grow-1"></span>
+            {% endif %}
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+            <button type="submit" class="btn btn-primary">Zapisz</button>
+        </div>
+    </form>
+{% endwith %}

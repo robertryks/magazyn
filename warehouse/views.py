@@ -502,7 +502,7 @@ def supply_remove(request, pk):
 
 # endregion
 
-# region SUPPLY
+# region SUPPLY ITEM
 
 @login_required(login_url='/login')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -511,7 +511,8 @@ def supply_item_index(request):
 
 
 def supply_item_list(request):
-    return render(request, 'supply_item/list.html', {'supply_item_list': SupplyItemModel.objects.all()})
+    context = {'supply_item_list': SupplyItemModel.objects.all()}
+    return render(request, 'supply_item/list.html', context)
 
 
 def supply_item_add(request):
@@ -521,7 +522,7 @@ def supply_item_add(request):
             supply_item = form.save()
             messages.add_message(request,
                                  messages.SUCCESS,
-                                 f"Dodano dostawę o numerze: {supply_item.number}"
+                                 f"Dodano nową pozycję dostawy"
                                  )
             return HttpResponse(
                 status=204,
@@ -546,7 +547,7 @@ def supply_item_edit(request, pk):
             form.save()
             messages.add_message(request,
                                  messages.SUCCESS,
-                                 f"Zmieniono numer dostawy na {supply_item.number}"
+                                 f"Zmieniono pozycję dostawy"
                                  )
             return HttpResponse(
                 status=204,
@@ -570,7 +571,7 @@ def supply_item_remove(request, pk):
     if related_list:
         messages.add_message(request,
                              messages.ERROR,
-                             f"Dostawa o numerze {supply_item.number} jest w użyciu."
+                             f"Ta pozycja jest w użyciu."
                              )
         return HttpResponse(
             status=204,
@@ -584,7 +585,7 @@ def supply_item_remove(request, pk):
         supply_item.delete()
         messages.add_message(request,
                              messages.SUCCESS,
-                             f"Usunięto dostawę o numerze {supply_item.number}"
+                             f"Usunięto pozycję dostawy"
                              )
         return HttpResponse(
             status=204,

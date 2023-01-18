@@ -8,13 +8,13 @@
         </div>
         <div class="modal-body">
             <div class="mb-3">
-                <label for="{{ form.number.id_for_label }}" class="form-label">Dostawa</label>
+                <label for="{{ form.number.id_for_label }}" class="form-label">{{ form.number.label }}</label>
                 {% render_field form.number class="form-control" %}
                 <div class="invalid-feedback">{{ form.number.errors|first }}</div>
             </div>
             <div class="mb-1">
-                <label for="{{ form.date.id_for_label }}" class="form-label">Dostawa</label>
-                {% render_field form.date type="date" class="form-control datetimepicker-input" %}
+                <label for="{{ form.date.id_for_label }}" class="form-label">{{ form.date.label }}</label>
+                {% render_field form.date type="date" class="form-control" %}
                 <div class="invalid-feedback">{{ form.date.errors|first }}</div>
             </div>
         </div>

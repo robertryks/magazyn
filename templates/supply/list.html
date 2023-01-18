@@ -9,6 +9,13 @@
                     hx-target="#dialog">
                 <i class="fa-solid fa-pen"></i>
             </button>
+            {% if supply %}
+                <a class="btn btn-outline-primary btn-sm"
+                        href="{% url 'supply_item-main'%}"
+                >
+            {% endif %}
+            <i class="fa-solid fa-list-ol"></i>
+            </a>
         </td>
     </tr>
 

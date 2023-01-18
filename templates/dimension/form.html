@@ -8,7 +8,7 @@
         </div>
         <div class="modal-body">
             <div class="mb-3">
-                <label for="{{ form.size.id_for_label }}" class="form-label">Średnica</label>
+                <label for="{{ form.size.id_for_label }}" class="form-label">{{ form.size.label }}</label>
                 {% render_field form.size class="form-control" %}
                 <div class="invalid-feedback">{{ form.size.errors|first }}</div>
             </div>

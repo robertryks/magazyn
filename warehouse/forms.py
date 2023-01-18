@@ -30,9 +30,7 @@ class GradeForm(forms.ModelForm):
             "name": "Gatunek"
         }
         widgets = {
-            "name": forms.TextInput(
-                attrs={"placeholder": "oznaczenie"}
-            )
+            "name": forms.TextInput
         }
 
 
@@ -44,9 +42,7 @@ class HeatForm(forms.ModelForm):
             "name": "Wytop"
         }
         widgets = {
-            "name": forms.TextInput(
-                attrs={"placeholder": "oznaczenie"}
-            )
+            "name": forms.TextInput
         }
 
 
@@ -58,9 +54,7 @@ class CertificateForm(forms.ModelForm):
             "name": "Certyfikat"
         }
         widgets = {
-            "name": forms.TextInput(
-                attrs={"placeholder": "numer"}
-            )
+            "name": forms.TextInput
         }
 
 
@@ -73,14 +67,18 @@ class SupplyForm(forms.ModelForm):
             "date": "Data WZ"
         }
         widgets = {
-            "number": forms.TextInput(
-                attrs={"placeholder": "numer"}
-            ),
-            "date": forms.DateInput
+            "number": forms.TextInput,
+            "date": forms.DateInput(format='%Y-%m-%d')
         }
 
 
 class SupplyItemForm(forms.ModelForm):
+    dimension = forms.ModelChoiceField(queryset=DimensionModel.objects.all()),
+    grade = forms.ModelChoiceField(queryset=GradeModel.objects.all()),
+    heat = forms.ModelChoiceField(queryset=HeatModel.objects.all()),
+    certificate = forms.ModelChoiceField(queryset=CertificateModel.objects.all()),
+    quantity = forms.DecimalField
+
     class Meta:
         model = SupplyItemModel
         exclude = ("can_modify", "actual")
@@ -91,10 +89,4 @@ class SupplyItemForm(forms.ModelForm):
             "certificate": "Certyfikat",
             "quantity": "Ilość",
         }
-        widgets = {
-            "dimension": forms.DecimalField,
-            "grade": forms.TextInput,
-            "heat": forms.TextInput,
-            "certificate": forms.TextInput,
-            "quantity": forms.DecimalField
-        }
+

@@ -35,7 +35,7 @@ urlpatterns = [
 
     # CERTIFICATE
     path('certificate/all', views.certificate_index, name='certificate-main'),
-    path('certificate/list', views.certificate_list, name='certificate-list'),
+    path('certificate/list/', views.certificate_list, name='certificate-list'),
     path('certificate/add', views.certificate_add, name='certificate-add'),
     path('certificate/<int:pk>/edit', views.certificate_edit, name='certificate-edit'),
     path('certificate/<int:pk>/remove', views.certificate_remove, name='certificate-remove'),
