@@ -15,7 +15,10 @@
         </div>
         <div class="modal-footer">
             {% if dimension %}
-                <button type="button" class="btn btn-danger" hx-post="{% url 'dimension-remove' pk=dimension.pk %}">
+                <button type="button"
+                        class="btn btn-danger"
+                        hx-post="{% url 'dimension-remove' pk=dimension.pk %}"
+                >
                     Usuń
                 </button>
                 <span class="flex-grow-1"></span>

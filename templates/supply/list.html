@@ -5,13 +5,13 @@
         <td>{{ supply.date }}</td>
         <td>
             <button class="btn btn-outline-primary btn-sm"
-                    hx-get="{% url 'supply-edit' pk=supply.pk %}"
+                    hx-get="{% url 'supply-edit' pk=supply.id %}"
                     hx-target="#dialog">
                 <i class="fa-solid fa-pen"></i>
             </button>
             {% if supply %}
                 <a class="btn btn-outline-primary btn-sm"
-                        href="{% url 'supply_item-main'%}"
+                        href="{% url 'supply_item-main' supply_pk=supply.id%}"
                 >
             {% endif %}
             <i class="fa-solid fa-list-ol"></i>

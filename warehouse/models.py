@@ -188,6 +188,11 @@ class SupplyItemModel(BaseModel):
         indexes = [
             models.Index(fields=['dimension', 'grade'], name='supplyitem_dimension_grade_idx')
         ]
+        constraints = [
+            models.CheckConstraint(check=models.Q(quantity__gt=0),
+                                   name='quantity_gt_0',
+                                   violation_error_message="Ilość musi być większa od zera."),
+        ]
 
 
 # # Wydanie towaru na skład

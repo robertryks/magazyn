@@ -1,3 +1,5 @@
+import datetime
+
 from django import forms
 
 from warehouse.models import DimensionModel, GradeModel, HeatModel, CertificateModel, SupplyModel, SupplyItemModel
@@ -68,20 +70,14 @@ class SupplyForm(forms.ModelForm):
         }
         widgets = {
             "number": forms.TextInput,
-            "date": forms.DateInput(format='%Y-%m-%d')
+            "date": forms.DateInput(format='%Y-%m-%d', attrs={'value': datetime.date.today})
         }
 
 
 class SupplyItemForm(forms.ModelForm):
-    dimension = forms.ModelChoiceField(queryset=DimensionModel.objects.all()),
-    grade = forms.ModelChoiceField(queryset=GradeModel.objects.all()),
-    heat = forms.ModelChoiceField(queryset=HeatModel.objects.all()),
-    certificate = forms.ModelChoiceField(queryset=CertificateModel.objects.all()),
-    quantity = forms.DecimalField
-
     class Meta:
         model = SupplyItemModel
-        exclude = ("can_modify", "actual")
+        exclude = ("supply", "can_modify", "actual")
         labels = {
             "dimension": "Średnica",
             "grade": "Gatunek",
@@ -89,4 +85,3 @@ class SupplyItemForm(forms.ModelForm):
             "certificate": "Certyfikat",
             "quantity": "Ilość",
         }
-

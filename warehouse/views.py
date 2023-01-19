@@ -14,10 +14,13 @@ def index(request):
     return render(request, 'index.html', {'form': LoginForm()})
 
 
+@login_required(login_url='/login')
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def panel(request):
+    return render(request, 'panel.html')
+
+
 # region USER
-
-# USER --------------------------------------------------------------------------------------------------------
-
 
 def login_check(request):
     if request.user.is_authenticated:
@@ -53,18 +56,9 @@ def logout_user(request):
     messages.add_message(request, messages.SUCCESS, 'Wylogowano!')
     return redirect('index')
 
-
-@login_required(login_url='/login')
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-def panel(request):
-    return render(request, 'panel.html')
-
-
 # endregion
 
 # region DIMENSION
-
-# DIMENSIONS ---------------------------------------------------------------------------------------------------
 
 @login_required(login_url='/login')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -128,26 +122,39 @@ def dimension_edit(request, pk):
 
 def dimension_remove(request, pk):
     dimension = get_object_or_404(DimensionModel, pk=pk)
-    dimension.delete()
-    messages.add_message(request,
-                         messages.SUCCESS,
-                         f"Usunięto średnicę {dimension.size} mm."
-                         )
-    return HttpResponse(
-        status=204,
-        headers={
-            'HX-Trigger': json.dumps({
-                "dimensionListChanged": None
-            })
-        }
-    )
+    related_list = dimension.is_deletable()
+    if related_list:
+        messages.add_message(request,
+                             messages.ERROR,
+                             f"Średnica {dimension.size} mm jest w użyciu."
+                             )
+        return HttpResponse(
+            status=204,
+            headers={
+                'HX-Trigger': json.dumps({
+                    "supplyListChanged": None
+                })
+            }
+        )
+    else:
+        dimension.delete()
+        messages.add_message(request,
+                             messages.SUCCESS,
+                             f"Usunięto średnicę {dimension.size} mm."
+                             )
+        return HttpResponse(
+            status=204,
+            headers={
+                'HX-Trigger': json.dumps({
+                    "dimensionListChanged": None
+                })
+            }
+        )
 
 
 # endregion
 
 # region GRADE
-
-# GRADES ---------------------------------------------------------------------------------------------------
 
 @login_required(login_url='/login')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -211,25 +218,39 @@ def grade_edit(request, pk):
 
 def grade_remove(request, pk):
     grade = get_object_or_404(GradeModel, pk=pk)
-    grade.delete()
-    messages.add_message(request,
-                         messages.SUCCESS,
-                         f"Usunięto gatunek {grade.name}"
-                         )
-    return HttpResponse(
-        status=204,
-        headers={
-            'HX-Trigger': json.dumps({
-                "gradeListChanged": None
-            })
-        }
-    )
+    related_list = grade.is_deletable()
+    if related_list:
+        messages.add_message(request,
+                             messages.ERROR,
+                             f"Gatunek {grade.name} jest w użyciu."
+                             )
+        return HttpResponse(
+            status=204,
+            headers={
+                'HX-Trigger': json.dumps({
+                    "supplyListChanged": None
+                })
+            }
+        )
+    else:
+        grade.delete()
+        messages.add_message(request,
+                             messages.SUCCESS,
+                             f"Usunięto gatunek {grade.name}"
+                             )
+        return HttpResponse(
+            status=204,
+            headers={
+                'HX-Trigger': json.dumps({
+                    "gradeListChanged": None
+                })
+            }
+        )
 
 
 # endregion
 
 # region HEAT
-
 
 @login_required(login_url='/login')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -293,19 +314,34 @@ def heat_edit(request, pk):
 
 def heat_remove(request, pk):
     heat = get_object_or_404(HeatModel, pk=pk)
-    heat.delete()
-    messages.add_message(request,
-                         messages.SUCCESS,
-                         f"Usunięto wytop {heat.name}"
-                         )
-    return HttpResponse(
-        status=204,
-        headers={
-            'HX-Trigger': json.dumps({
-                "heatListChanged": None
-            })
-        }
-    )
+    related_list = heat.is_deletable()
+    if related_list:
+        messages.add_message(request,
+                             messages.ERROR,
+                             f"Wytop {heat.name} jest w użyciu."
+                             )
+        return HttpResponse(
+            status=204,
+            headers={
+                'HX-Trigger': json.dumps({
+                    "supplyListChanged": None
+                })
+            }
+        )
+    else:
+        heat.delete()
+        messages.add_message(request,
+                             messages.SUCCESS,
+                             f"Usunięto wytop {heat.name}"
+                             )
+        return HttpResponse(
+            status=204,
+            headers={
+                'HX-Trigger': json.dumps({
+                    "heatListChanged": None
+                })
+            }
+        )
 
 
 # endregion
@@ -415,7 +451,8 @@ def supply_index(request):
 
 
 def supply_list(request):
-    return render(request, 'supply/list.html', {'supply_list': SupplyModel.objects.all()})
+    context = {'supply_list': SupplyModel.objects.all()}
+    return render(request, 'supply/list.html', context)
 
 
 def supply_add(request):
@@ -474,7 +511,7 @@ def supply_remove(request, pk):
     if related_list:
         messages.add_message(request,
                              messages.ERROR,
-                             f"Dostawa o numerze {supply.number} jest w użyciu."
+                             f"Dostawa {supply.number} jest w użyciu."
                              )
         return HttpResponse(
             status=204,
@@ -506,29 +543,36 @@ def supply_remove(request, pk):
 
 @login_required(login_url='/login')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-def supply_item_index(request):
-    return render(request, 'supply_item/main.html')
+def supply_item_index(request, supply_pk):
+    supply = SupplyModel.objects.get(pk=supply_pk)
+    context = {'supply_id': supply.id, 'supply_number': supply.number}
+    return render(request, 'supply_item/main.html', context)
 
 
-def supply_item_list(request):
-    context = {'supply_item_list': SupplyItemModel.objects.all()}
+def supply_item_list(request, supply_pk):
+    context = {'supply_item_list': SupplyItemModel.objects.filter(supply_id=supply_pk)}
     return render(request, 'supply_item/list.html', context)
 
 
-def supply_item_add(request):
+def supply_item_add(request, supply_pk):
     if request.method == 'POST':
+        supply = SupplyModel.objects.get(pk=supply_pk)
         form = SupplyItemForm(request.POST)
         if form.is_valid():
-            supply_item = form.save()
+            supply_item = form.save(commit=False)
+            supply_item.supply = supply
+            supply_item.actual = supply_item.quantity
+            supply_item.save()
             messages.add_message(request,
                                  messages.SUCCESS,
-                                 f"Dodano nową pozycję dostawy"
+                                 f"Dodano pręt o średnicy {supply_item.dimension} w gatunku {supply_item.grade} do "
+                                 f"dostawy"
                                  )
             return HttpResponse(
                 status=204,
                 headers={
                     'HX-Trigger': json.dumps({
-                        "supply_itemListChanged": None
+                        "supplyItemListChanged": None
                     })
 
                 })
@@ -540,7 +584,7 @@ def supply_item_add(request):
 
 
 def supply_item_edit(request, pk):
-    supply_item = get_object_or_404(SupplyModel, pk=pk)
+    supply_item = get_object_or_404(SupplyItemModel, pk=pk)
     if request.method == "POST":
         form = SupplyItemForm(request.POST, instance=supply_item)
         if form.is_valid():
@@ -553,7 +597,7 @@ def supply_item_edit(request, pk):
                 status=204,
                 headers={
                     'HX-Trigger': json.dumps({
-                        "supply_itemListChanged": None
+                        "supplyItemListChanged": None
                     })
                 }
             )
@@ -577,7 +621,7 @@ def supply_item_remove(request, pk):
             status=204,
             headers={
                 'HX-Trigger': json.dumps({
-                    "supply_itemListChanged": None
+                    "supplyItemListChanged": None
                 })
             }
         )
@@ -591,7 +635,7 @@ def supply_item_remove(request, pk):
             status=204,
             headers={
                 'HX-Trigger': json.dumps({
-                    "supply_itemListChanged": None
+                    "supplyItemListChanged": None
                 })
             }
         )
